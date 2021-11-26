@@ -1,0 +1,13 @@
+Sendgrid Email Relay
+--------------------
+
+I have an account on sendgrid for emailing the verification code for a 
+new user. The program main.go on my AWS newindigommt.com runs a server 
+off port 5000. The Angular app sends a request to this program, which 
+gets forwarded to sendgrid. All this is being done to keep my API key
+for sendgrid out of sight. 
+
+When running the go program, first source sendgrid.env--this puts the 
+API key into the environment where the program can pick it up. 
+Note: sendgrid.env is on the newindigommt.com site. I can't add it to this repo
+without making it public and opening access to my sendgrid account.
