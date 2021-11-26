@@ -1,0 +1,38 @@
+.login-form {
+  width: 400px;
+  margin: auto;
+  background-color: lightblue;
+}
+.top-space {
+  margin-top: 60px;
+}
+.toolbar {
+  height: 100%;
+  display: block;
+  padding-left: 10px;
+}
+.form-field {
+  width: 100%;
+  height: 30px;
+  margin-bottom: 25px;
+}
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center
+}
+.test {
+  background-color: orangered;
+}
+.error {
+  color: red;
+  margin-top: 5px;
+}
+.blue-text {
+  color: blue;
+  text-decoration: underline;
+}
+.right-just {
+  text-align: right;
+  margin-top: 10px;
+}
