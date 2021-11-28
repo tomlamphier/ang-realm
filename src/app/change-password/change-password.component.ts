@@ -36,13 +36,11 @@ export class ChangePasswordComponent implements OnInit {
   onSubmit() {
     this.failedChange = "";
     let res = this.authService.changePassword(this.formGroup.controls['password'].value);
-    res.then(r => {
-      if (r == 'success') {
-        this.router.navigate(['']);
-      } else {
-        this.failedChange = r;
-      }
-    });
+    res.then(() => {
+      this.router.navigate(['']);
+    }).catch(err => {
+      this.failedChange = "Error occurred while attempting to change your password";
+    })
   }
 
   get password() {

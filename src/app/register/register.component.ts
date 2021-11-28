@@ -78,21 +78,13 @@ export class RegisterComponent implements OnInit {
     } else {
       let e = this.formGroup.controls['emailID'].value;
       let p = this.formGroup.controls['password'].value;
-      let res = this.authService.register(e,p);
+      let res = this.authService.register(e, p);
       res.then(r => {
-        if (r == 'success') {
-          let res2 = this.authService.login(e,p);
-          res2.then(r2 => {
-            if (r2 == 'success') {
-              this.router.navigate(['']);
-            } else {
-              this.failedRegistration = "Registration failed: " + r2;
-            }
-          })
-        } else {
-          console.log('registration failed');
-          this.failedRegistration = "Registration failed: " + r;
-        }
+        this.authService.login(e, p);
+      }).then(() => {
+        this.router.navigate(['']);
+      }).catch(err => {
+        this.failedRegistration = "Registration failed: " + err;
       });
     }
   }

@@ -17,28 +17,21 @@ export class AuthService {
   loggedIn = false;
   email = "";
 
-  async login (emailID: string, password: string): Promise<string> {
-    this.email = emailID;
+  login (emailID: string, password: string): Promise<string> {
     const credentials = Realm.Credentials.emailPassword(emailID, password);
-    let result = "";
-    try {
-      const u: Realm.User = await this.app.logIn(credentials);
-      // `App.currentUser` updates to match the logged in user
-      //assert(user.id === app.currentUser.id)
-      this.user = u;
-      this.loggedIn = true;
-      result = "success";
-    } catch(err) {
-      this.user = {} as Realm.User;
-      this.loggedIn = false;
-      result = err.error;
-    }
-    return new Promise(resolve => {
-      resolve(result);
-    })
+    let u = this.app.logIn(credentials);
+    return new Promise<string>((resolve, reject) => {
+      u.then(r => {
+        this.user = r;
+        this.loggedIn = true;
+        resolve("success")
+      }).catch(err => {
+        reject("Login failed");
+      })
+    });
   }
-  
-  isLoggedIn2() {
+
+  isLoggedIn() {
     return this.app.currentUser != null;
   }
 
@@ -54,34 +47,30 @@ export class AuthService {
     return this.http.get(query, {responseType: "text"}).toPromise();
   }
 
-  async register(emailID: string, password: string): Promise<string> {
-    let result = "";
-    try {
-      let res = await this.app.emailPasswordAuth.registerUser(emailID, password);
-      result = "success";
-    } catch(err) {
-      result = err.error;
-    }
-    return new Promise(resolve => {
-      resolve(result);
-    })
+  // async register(emailID: string, password: string): Promise<string> {
+  //   let result = "";
+  //   try {
+  //     let res = await this.app.emailPasswordAuth.registerUser(emailID, password);
+  //     result = "success";
+  //   } catch(err) {
+  //     result = err.error;
+  //   }
+  //   return new Promise(resolve => {
+  //     resolve(result);
+  //   })
+  // }
 
-  }
-
-  async changePassword(password: string): Promise<string> {
-    let result = "";
-    try {
-      let res = await this.app.emailPasswordAuth.callResetPasswordFunction(this.email, password);
-      result = "success";
-    } catch(err) {
-      result = err.error;
-    }
-    return new Promise(resolve => {
-      resolve(result);
-    })
-
+  register(emailID: string, password: string): Promise<void> {
+    return this.app.emailPasswordAuth.registerUser(emailID, password);
   }
 
 
+  changePassword(password: string): Promise<void> {
+    let res = this.app.currentUser!.functions.callFunction("getEmail", this.app.currentUser!.id);
+    let res2 = res.then(r => {
+      this.app.emailPasswordAuth.callResetPasswordFunction(r.email, password);
+    });
+    return res2;
+  }
 }
 

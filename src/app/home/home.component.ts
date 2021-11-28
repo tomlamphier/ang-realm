@@ -12,7 +12,7 @@ export class HomeComponent implements OnInit {
   constructor(private auth: AuthService, private router: Router) { }
 
   ngOnInit(): void {
-    if (this.auth.isLoggedIn2()) {
+    if (this.auth.isLoggedIn()) {
         this.router.navigate(['hello-component']);
     } else {
         this.router.navigate(['login-component']);

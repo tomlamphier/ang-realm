@@ -13,7 +13,7 @@ export class HelloComponent implements OnInit {
               private authService: AuthService) { }
 
   ngOnInit(): void {
-    if (!this.authService.isLoggedIn2()) {
+    if (!this.authService.isLoggedIn()) {
       this.router.navigate(['login-component']);
     }
   }

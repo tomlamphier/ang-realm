@@ -42,11 +42,9 @@ export class LoginComponent implements OnInit {
       let psw = this.formGroup.controls['password'].value;
       let res = this.authService.login(usr, psw);
       res.then(r => {
-        if (r == 'success') {
           this.router.navigate(['']);
-        } else {
-          this.failedLogin = r;
-        }
+      }).catch(err => {
+        this.failedLogin = err;
       });
     }
   }
