@@ -1,0 +1,62 @@
+Promises
+--------
+November, 2021
+
+A Promise is a special class used in JavaScript to simplify async calls. The 
+best way to get a basic understanding of Promises is to look at a non-trivial example, for instance the logon process in the ang-realm project (See in github.).
+
+The pseudocode for logon on the caller's side is:
+
+   1.  Call my auth function with email and password, get back
+       immediately a promise.
+
+   2.  Define two lambda functions, one for success, the other for failure. 
+       pass these to the promise with then and catch clauses.
+
+   3.  Wait for the promise to get done, at which point the success or failure
+       function will be called. Success -> go to main page, Failure ->
+       display error message.
+
+And on the called side:
+
+   1.  My auth function calls the back end logon service with email and
+       password and gets back immediately a promise A that will hopefully
+       resolve to a user object.
+
+   2.  I want to store that user locally within my auth service, hence my 
+       function defines success and failure lambda functions to handle this.  
+
+   3.  But I also have to return a promise to the original caller, so 
+       I define promise B and chain it so that promise A completes, then
+       allows promise B to complete, and finally the original caller gets the
+       OK / not OK result.
+
+
+Code Snippets from the ang-realm project:
+
+   LogonComponent
+
+      let res = this.authService.login(usr, psw);  // res is a promise
+      res.then(r => {                              
+          this.router.navigate(['']);              // success leg
+      }).catch(err => {
+        this.failedLogin = err;                    // failure leg
+      });
+
+   AuthService
+
+        login (emailID: string, password: string): Promise<string> {
+          const credentials = Realm.Credentials.emailPassword(emailID, password);
+          let u = this.app.logIn(credentials);
+          return new Promise<string>((resolve, reject) => {
+            u.then(r => {
+              this.user = r;
+              this.loggedIn = true;
+              resolve("success")
+            }).catch(err => {
+             reject("Login failed");
+            })
+          });
+       }
+
+

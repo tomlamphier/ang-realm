@@ -1,0 +1,112 @@
+Angular Forms
+-------------
+November, 2021
+
+How to divide this into chunks?
+
+   o  An intro section 
+   o  Design
+   o  Using Material Design
+   o  Form layout
+   o  Form Validation
+   o  Reference
+
+
+Intro
+* * * * * * * * *
+
+A form is a web page that allows a user to enter data for such purposes as 
+logging on to an account, providing billing information or doing a query. 
+Form processing has evolved over the years since the original HTML forms were
+invented.  In the old scheme, you defined a form with the <FORM> tag, gave it
+either a GET or a POST designation, and specified an action URL where the form
+data would be sent on submit. Most of that has changed, except some of the HTML
+elements are still in use, for example <INPUT>.
+
+Angular has two ways of working with forms: template-driven (the old way) and
+reactive (the new way). The Angular docs recommend reactive, and that is my
+strong preference after looking over both. The ang-realm project in github
+is my reference for Angular forms. That project uses forms for logging on,
+registering a new user, and changing a password.  
+
+Design
+* * * * * * * * * *
+
+Where do you start with reactive forms? In a typical project, you have 
+functions, such as a login page that call for some kind of form. You probably
+know the fields that are required, but you may want to make changes as you
+go along. So the first good practice is to do a few wireframe designs of a 
+proposed form.  Wireframes are very easy to sketch out on paper or mock up
+in a diagram.  And they are throwaway documents--no need to keep them once
+you go through a few coding iterations. In effect, your interim versions become
+wireframes.  
+
+Using Material Design
+* * * * * * * * * * * *
+
+The next step is to produce a professional-looking form, which is important
+because your app has to look sharp to the users.  This is where Google's
+material design comes in. The material.io website says this about it:
+
+   Material is an adaptable system of guidelines, components, and tools that 
+   support the best practices of user interface design. Backed by open-source 
+   code, Material streamlines collaboration between designers and developers, 
+   and helps teams quickly build beautiful products.
+
+Material design is such a big topic that it can become overwhelming. But it need
+not be if you have a simple strategy for using it.  The first two things
+to do are:
+
+   1.  On a new Angular project, install material with 
+          ng add @angular/material
+       Choose the indigo-pink theme, which defines colors such as primary,
+       warning, etc.
+
+   2.  Material is a collection of modules. You have to import the ones
+       you are going to use in app.module.ts. See the ang-realm project
+       for a list.
+ 
+Layout
+* * * * * * * *
+
+My form design is a top-level div with css to set the overall size and 
+position, and a child div to specify a FormGroup. FormGroup
+is an Angular class that contains fields (more on this later.).
+
+The next level down has two parts, a mat-toolbar for the form title
+and a mat-card to hold the fields. Each form field is followed by conditional
+error messages. Using the *ngIf directive, I only show a message when there
+is an error.
+
+Validation
+* * * * * * * * 
+
+In reactive Angular forms, FormControl represents the data and 
+validation status of a single field. FormGroup is a container for 
+one or more FormControls.  These are defined in your component's
+ts file. The FormControl definition includes a name and an optional
+list of validator functions. Angular has a number of predefined 
+validators (required, minSize, ...). You can create custom ones as well.
+I did this with a service, but later found a way to use the existing
+validators, so I scrapped the custom one.
+
+The key thing about how the validators work is that Angular 
+automatically applies them when a field changes, and you can tie
+error messages to different validators to display error messages.
+Here is an example of an email check:
+
+  <div *ngIf="emailID.errors?.email" class="form-field error">
+     ID must be a valid email
+  </div>  
+
+I tell Angular to only do the validation when a used moves on from
+a field (the onBlur option). Without this option, the validation
+gets done on each keystroke--not good for my use cases. 
+
+When I need to know if all fields are valid, I check the FormGroup.valid
+property. I use this to decide whether to activate the submit button.
+
+Reference
+* * * * * * *
+
+Angular Material website: material.angular.io

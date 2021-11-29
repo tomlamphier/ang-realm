@@ -1,0 +1,71 @@
+Realm Auth for the Web
+----------------------
+November, 2021
+
+
+User auth is a very important part of web applications, and I would want it
+for any project that I was considering for production use. In order to 
+learn how to do it, I built an Angular project, ang-realm, that features
+user logon, registration, and change password functions. The back end uses
+MongoDB Realm's email/password authentication service. This doc explains
+the details of setting it up with Realm.
+
+The Realm Back End
+------------------
+
+The first consideration is creating a Realm app. You start with 
+console.mongodb.com, logon w/my email + _mongo. Create a new project
+if you don't already have one, then create an app. Copy the generated
+app key--this is like a connection string for the web client.  
+
+Go to the authentication tab and enable email/password auth. Under the 
+settings, select automatically confirm users and run a password reset 
+function for password changes.  
+
+We need a single mongo collection--User--to hold a user's ID (a UUID) and
+email. This comes into play when your client needs to look up the email
+for a given user ID.  You define a database under the Atlas tab and add 
+User as a collection. Next, you go to the Schema tab to provide a schema
+for User. Schema lists the fields, names the key, and so forth. Copy from
+Indigo-App app under the Indigo project.
+
+Functions are routines owned by the Realm app that do operations for you. The
+first one you need is resetFunc, noted above. This function is sposed to 
+validate a change password request. I set it to always OK a request. Copy
+from Indigo-App and don't worry about it.
+
+A second function is createNewUserDocument. This is triggered by a new 
+user registration event, and its job is to save the ID and email in the 
+User collection. Again, Indigo-App's is what you need. And the counterpart to
+saving this info is the function getEmail. This can be called from the client
+to get the email for a given user ID.
+
+Defining all the above pieces is easy with Realm's console. And if you 
+make a mistake, do-overs are quick and painless.  So to summarize what's
+done in the Realm sphere,
+
+   o  Log on to the console and create a new app for your project. Copy
+      the app id for use in your web client.
+
+   o  Select email/password auth and configure.
+
+   o  Define a database and collection for user info, add the schema JSON.
+
+   o  Add functions for password reset (a stub) and user info.
+
+Client Side
+-----------
+
+I centralized the Realm processing in a service, AuthService.  AuthService is
+a singleton object because it is provided in the root module.  The housekeeping defines an app object, the entry point for all Realm requests. This is where
+you specify the app ID.  
+
+The Realm access functions are login, logout, register, changePassword. All
+of these are asynchronous calls done with promises. Because of the way Realm
+works, I needed to create a work flow to verify the email used when a new
+user registers.  I did this by genning a 5-digit code and emailing it to the 
+user as a way of ensuring that the user really has that email account. 
+
+The outgoing verification email goes to a relay server that I put on 
+newindigommt.com at port 5000. The relay server forwards it to Sendgrid, which is an email sending service. The relay is necessary to secure the API key
+for my Sendgrid account.  

@@ -47,19 +47,6 @@ export class AuthService {
     return this.http.get(query, {responseType: "text"}).toPromise();
   }
 
-  // async register(emailID: string, password: string): Promise<string> {
-  //   let result = "";
-  //   try {
-  //     let res = await this.app.emailPasswordAuth.registerUser(emailID, password);
-  //     result = "success";
-  //   } catch(err) {
-  //     result = err.error;
-  //   }
-  //   return new Promise(resolve => {
-  //     resolve(result);
-  //   })
-  // }
-
   register(emailID: string, password: string): Promise<void> {
     return this.app.emailPasswordAuth.registerUser(emailID, password);
   }

@@ -1,0 +1,40 @@
+Angular Auth Work Flow
+----------------------
+
+This is the work flow for my ang-realm project, which does user auth, i.e.
+login, etc.  
+
+The top level component, app, has a menu up on the top left. The menu options
+are change password and logout. These are grayed out when no user is logged in.
+The default router page is home, which is just a placeholder. Home checks 
+whether a user is logged in or not. If logged in, route to the hello component,
+which would be the beginning page of the app. If not logged in, route to 
+login component.
+
+Login presents a form for email & password. The form has a link on the bottom 
+in case you are a new user; that goes to the register component. Filling
+in the user credentials  and clicking submit tells the app to send a login
+request to the back end. If that works, you get routed to the home component,
+then to hello. If the login fails, display an error message. Note: the form
+uses Angular validation to check the fields before you submit.
+
+The register component displays a form for email and password (twice). When you
+click submit (and validation is OK), the component gens a 5-digit confirm
+number and emails it to the user's stated email address. A confirm field
+becomes visible and you type the verification code in there. Now the submit
+button causes the component to verify the code, then send a registration
+request to the back end. If that succeeds, do a login request, then go to home, 
+then hello.
+
+Change password is accessed off the menu. That routes you to the change 
+password component, which shows a menu for the new password (2X). The submit
+button causes the program to send the request to my service. My service 
+retrieves the email for the currently logged in user, then sends a change
+request for that email + new password to the back end.
+
+In summary, the default landing place for ang-realm is the home component.
+Home enforces the login requirement by sending you off to the login 
+component if nobody is logged in. The login form has a link for the case 
+of a new user, which is the job of rhe register component. A logged in user
+can select the change password function off a menu--that sends you to the changepassword component. And finally, the logoff menu option simply puts you back in
+the state where no user is logged in.
